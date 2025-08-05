@@ -19,6 +19,14 @@ Built on Firebase platform using:
 - **Firebase Hosting** - Static file hosting for configuration UI
 - **Cloud Scheduler** - Automated polling and cleanup tasks
 
+## Documentation
+
+- 🚀 **[Quick Start Guide](docs/QUICK_START.md)** - Get running in 15 minutes
+- 📖 **[Complete Setup Guide](docs/SETUP_GUIDE.md)** - Detailed installation instructions
+- 👥 **[User Experience Guide](docs/USER_EXPERIENCE_GUIDE.md)** - What users see and do
+- 🏗️ **[Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)** - System design and data flow
+- 🔒 **[Security Audit](SECURITY_AUDIT.md)** - Security analysis and recommendations
+
 ## Setup
 
 ### Prerequisites
