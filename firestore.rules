@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the resource
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // LTI Platform configurations (read-only for authenticated users)
+    match /lti_platforms/{platform} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admins via Admin SDK
+    }
+    
+    // User sessions - users can only access their own sessions
+    match /user_sessions/{sessionId} {
+      allow read, write: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.userId);
+    }
+    
+    // LTI launches - users can read their own launch data
+    match /lti_launches/{launchId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isAuthenticated();
+      allow update: if false; // Launches are immutable
+    }
+    
+    // Survey configurations - read/write based on course access
+    match /survey_configs/{configId} {
+      allow read: if isAuthenticated() && 
+        get(/databases/$(database)/documents/user_sessions/$(request.auth.uid)).data.courseId == resource.data.courseId;
+      allow write: if isAuthenticated() &&
+        get(/databases/$(database)/documents/user_sessions/$(request.auth.uid)).data.roles.hasAny(['instructor', 'admin']);
+    }
+    
+    // Grade passbacks - instructors can read, system writes only
+    match /grade_passbacks/{gradeId} {
+      allow read: if isAuthenticated() &&
+        get(/databases/$(database)/documents/user_sessions/$(request.auth.uid)).data.roles.hasAny(['instructor', 'admin']);
+      allow write: if false; // Only system via Admin SDK
+    }
+    
+    // LTI keys - no direct access, only via Admin SDK
+    match /lti_keys/{keyId} {
+      allow read, write: if false;
+    }
+  }
+}
