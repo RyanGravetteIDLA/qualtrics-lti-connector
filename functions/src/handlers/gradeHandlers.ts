@@ -142,9 +142,9 @@ router.get("/user/:userId", verifySession, async (req, res) => {
       } as ApiResponse);
     }
 
-    // Get grade passback records
+    // Get grade passback records (userId is now email)
     const gradeQuery = await getDb().collection("grade_passbacks")
-      .where("userId", "==", userId)
+      .where("userEmail", "==", userId) // Query by email field
       .orderBy("timestamp", "desc")
       .get();
 
@@ -222,9 +222,9 @@ router.post("/process-completion", async (req, res) => {
     // Calculate grade based on response
     const grade = calculateGradeFromResponse(response, surveyConfig);
 
-    // Find associated LTI launch
+    // Find associated LTI launch (userId in launches is now email)
     const launchQuery = await getDb().collection("lti_launches")
-      .where("userId", "==", userId)
+      .where("userId", "==", userId) // userId is email in LTI launches
       .where("contextId", "==", contextId)
       .where("resourceLinkId", "==", resourceLinkId)
       .orderBy("launchTime", "desc")
@@ -236,7 +236,8 @@ router.post("/process-completion", async (req, res) => {
     // Create grade passback record
     const gradePassback: GradePassback = {
       id: uuidv4(),
-      userId,
+      userId, // This should be an email address
+      userEmail: userId, // Explicit email field
       ltiLaunchId,
       surveyConfigId: surveyQuery.docs[0].id,
       qualtricsResponseId: responseId,
@@ -448,7 +449,8 @@ async function processGradePassbackToAgilix(grade: GradePassback): Promise<boole
     
     // Use Agilix service to pass back grade
     const success = await agilixService.passbackGrade({
-      userId: grade.userId,
+      userId: grade.lmsUserId || launch.lmsUserId || grade.userId, // Try to use original LMS ID, fallback to email
+      userEmail: grade.userEmail, // Pass email for reference
       contextId: launch.contextId,
       resourceLinkId: launch.resourceLinkId,
       grade: grade.grade,
@@ -473,7 +475,7 @@ router.get("/submission-status/:surveyId", verifySession, async (req, res) => {
     // Check if grade passback exists for this user and survey
     const gradeQuery = await getDb().collection("grade_passbacks")
       .where("surveyConfigId", "==", surveyId)
-      .where("userId", "==", userId)
+      .where("userEmail", "==", userId) // userId is email from session
       .orderBy("timestamp", "desc")
       .limit(1)
       .get();

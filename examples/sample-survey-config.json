@@ -1,0 +1,27 @@
+{
+  "description": "Sample survey configuration for instructor setup",
+  "surveyConfig": {
+    "instructorId": "instructor_001",
+    "contextId": "course_789",
+    "resourceLinkId": "resource_link_456",
+    "qualtricsDetails": {
+      "surveyId": "SV_1234567890abcde",
+      "distributionId": "EMD_abcdefghijklmno"
+    },
+    "settings": {
+      "surveyName": "Module 1 Feedback Survey",
+      "maxGrade": 100,
+      "isExtraCredit": false,
+      "scoringType": "completion",
+      "dueDate": "2025-12-31T23:59:59Z"
+    },
+    "embeddedDataMapping": {
+      "userEmail": "email",
+      "ltiUserId": "sub",
+      "ltiContextId": "context.id",
+      "ltiResourceId": "resource_link.id",
+      "userName": "name",
+      "courseName": "context.title"
+    }
+  }
+}

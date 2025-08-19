@@ -103,7 +103,8 @@ export class AgilixService {
    * Pass back grade to Agilix Buzz
    */
   async passbackGrade(gradeData: {
-    userId: string;
+    userId: string; // Should be the original LMS user ID
+    userEmail?: string; // Email address for reference
     contextId: string;
     resourceLinkId: string;
     grade: number;

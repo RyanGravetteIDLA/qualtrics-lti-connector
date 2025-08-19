@@ -141,9 +141,15 @@ const initializeLTI = async (): Promise<Provider> => {
 const handleLTILaunch = async (token: LTIToken): Promise<LTILaunch> => {
   const claims = token as LTITokenClaims;
   
+  // Validate email is present
+  if (!claims.email) {
+    throw new Error("Email address is required for user identification");
+  }
+
   const launch: LTILaunch = {
     id: uuidv4(),
-    userId: claims.sub,
+    userId: claims.email, // Using email as primary identifier
+    lmsUserId: claims.sub, // Store original LMS ID for reference
     platformId: claims.iss,
     deploymentId: claims["https://purl.imsglobal.org/spec/lti/claim/deployment_id"],
     contextId: claims["https://purl.imsglobal.org/spec/lti/claim/context"].id,
@@ -172,7 +178,8 @@ const handleLTILaunch = async (token: LTIToken): Promise<LTILaunch> => {
 const createUserSession = async (launch: LTILaunch, _token: LTIToken): Promise<UserSession> => {
   const session: UserSession = {
     id: uuidv4(),
-    userId: launch.userId,
+    userId: launch.userId, // This is now the email address
+    userEmail: launch.userInfo.email || launch.userId, // Explicit email field with fallback
     ltiLaunchId: launch.id,
     platformId: launch.platformId,
     contextId: launch.contextId,
@@ -223,6 +230,49 @@ router.get("/keys", async (req, res) => {
   } catch (error) {
     functions.logger.error("JWKS error:", error);
     return res.status(500).send("Key retrieval failed");
+  }
+});
+
+// Pre-flight check and help endpoint
+router.get("/help", async (req, res) => {
+  try {
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    
+    return res.json({
+      status: "ready",
+      service: "Qualtrics LTI Connector",
+      version: "1.0.0",
+      ltiVersion: "1.3",
+      endpoints: {
+        launch: `${baseUrl}/api/lti/launch`,
+        login: `${baseUrl}/api/lti/login`,
+        jwks: `${baseUrl}/api/lti/keys`,
+        deepLinking: `${baseUrl}/api/lti/launch`,
+      },
+      features: {
+        gradePassback: true,
+        deepLinking: true,
+        namesRoles: false,
+        extraCredit: true,
+        emailBasedIdentity: true,
+      },
+      configuration: {
+        instructions: "Configure your LMS with the endpoints above",
+        requiredClaims: ["sub", "email", "name"],
+        sessionTimeout: "1 hour",
+        pollingInterval: "5 minutes",
+      },
+      healthCheck: {
+        firebase: true,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    functions.logger.error("Help endpoint error:", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Service health check failed",
+    });
   }
 });
 
@@ -334,11 +384,13 @@ async function generateQualtricsSSO(launch: LTILaunch, survey: SurveyConfig): Pr
   
   // Create embedded data for the survey
   const embeddedData = new URLSearchParams({
-    ltiUserId: launch.userId,
+    userEmail: launch.userId, // userId is now the email
+    ltiUserId: launch.lmsUserId || "", // Original LMS ID for reference
     ltiContextId: launch.contextId,
     ltiResourceId: launch.resourceLinkId,
     ltiLaunchId: launch.id,
     courseName: launch.contextTitle || "",
+    userName: launch.userInfo.name || "",
   });
   
   // Build Qualtrics survey URL

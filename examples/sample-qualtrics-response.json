@@ -1,0 +1,61 @@
+{
+  "description": "Sample Qualtrics API response for survey submission",
+  "qualtricsResponse": {
+    "responseId": "R_1234567890",
+    "surveyId": "SV_1234567890abcde",
+    "recorded": "2025-08-19T10:25:00Z",
+    "finished": true,
+    "progress": 100,
+    "duration": 245,
+    "values": {
+      "userEmail": "test.student@example.com",
+      "ltiUserId": "user_123",
+      "ltiContextId": "course_789",
+      "ltiResourceId": "resource_link_456",
+      "ltiLaunchId": "launch_xyz789",
+      "courseName": "Biology 101",
+      "userName": "Test Student",
+      "QID1": "Test Student Name",
+      "QID2": "1",
+      "QID3": "Great course, very informative!",
+      "QID1_TEXT": "Test Student Name",
+      "QID2_TEXT": "Very Satisfied",
+      "QID3_TEXT": "Great course, very informative!",
+      "StartDate": "2025-08-19T10:20:00Z",
+      "EndDate": "2025-08-19T10:25:00Z",
+      "Status": "Survey Complete",
+      "IPAddress": "192.168.1.100",
+      "Duration": 245,
+      "Finished": "1",
+      "RecordedDate": "2025-08-19T10:25:00Z",
+      "ResponseId": "R_1234567890",
+      "LocationLatitude": "43.6150",
+      "LocationLongitude": "-116.2023",
+      "DistributionChannel": "anonymous",
+      "UserLanguage": "EN"
+    },
+    "labels": {
+      "QID1": "What is your name?",
+      "QID2": "How satisfied are you with this course?",
+      "QID3": "Please provide any additional feedback",
+      "Status": "Response Status",
+      "IPAddress": "IP Address",
+      "Duration": "Duration (in seconds)",
+      "Finished": "Finished",
+      "RecordedDate": "Recorded Date",
+      "ResponseId": "Response ID",
+      "LocationLatitude": "Location Latitude",
+      "LocationLongitude": "Location Longitude"
+    },
+    "displayedFields": [
+      "QID1",
+      "QID2", 
+      "QID3"
+    ],
+    "displayedValues": {
+      "QID1": "Test Student Name",
+      "QID2": "Very Satisfied",
+      "QID3": "Great course, very informative!"
+    }
+  }
+}

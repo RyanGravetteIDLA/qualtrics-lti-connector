@@ -145,10 +145,12 @@ export const pollQualtricsResponses = functions.pubsub.schedule("every 5 minutes
             continue; // Already processed
           }
           
-          // Extract user ID from embedded data
-          const userId = response.values.ltiUserId || response.values.QID_userId;
-          if (!userId) {
-            functions.logger.warn(`No user ID found in response ${response.responseId}`);
+          // Extract user email from embedded data
+          const userEmail = response.values.userEmail || response.values.QID_email;
+          const lmsUserId = response.values.ltiUserId; // Original LMS ID for reference
+          
+          if (!userEmail) {
+            functions.logger.warn(`No email found in response ${response.responseId}`);
             continue;
           }
           
@@ -164,7 +166,9 @@ export const pollQualtricsResponses = functions.pubsub.schedule("every 5 minutes
           // Create grade passback record
           const gradePassback: GradePassback = {
             id: admin.firestore().collection("grade_passbacks").doc().id,
-            userId,
+            userId: userEmail, // Using email as primary identifier
+            userEmail: userEmail,
+            lmsUserId: lmsUserId, // Store original LMS ID if needed for passback
             ltiLaunchId: response.values.ltiLaunchId || "",
             surveyConfigId: surveyConfig.id,
             qualtricsResponseId: response.responseId,
@@ -175,7 +179,7 @@ export const pollQualtricsResponses = functions.pubsub.schedule("every 5 minutes
           };
           
           await db.collection("grade_passbacks").doc(gradePassback.id).set(gradePassback);
-          functions.logger.info(`Created grade passback ${gradePassback.id} for user ${userId}`);
+          functions.logger.info(`Created grade passback ${gradePassback.id} for user ${userEmail}`);
         }
         
         // Update last poll time

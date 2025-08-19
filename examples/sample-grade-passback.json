@@ -1,0 +1,28 @@
+{
+  "description": "Sample grade passback payload for Agilix Buzz",
+  "gradePassback": {
+    "userId": "test.student@example.com",
+    "userEmail": "test.student@example.com",
+    "lmsUserId": "user_123",
+    "surveyConfigId": "config_abc123",
+    "qualtricsResponseId": "R_1234567890",
+    "grade": 95,
+    "maxGrade": 100,
+    "timestamp": "2025-08-19T10:30:00Z",
+    "processed": false,
+    "scoreGiven": 0.95,
+    "scoreMaximum": 1.0,
+    "activityProgress": "Completed",
+    "gradingProgress": "FullyGraded",
+    "comment": "Survey completed successfully"
+  },
+  "agilixPayload": {
+    "scoreGiven": 0.95,
+    "scoreMaximum": 1.0,
+    "activityProgress": "Completed",
+    "gradingProgress": "FullyGraded",
+    "userId": "user_123",
+    "timestamp": "2025-08-19T10:30:00Z",
+    "comment": "Automatically graded via Qualtrics LTI Connector"
+  }
+}

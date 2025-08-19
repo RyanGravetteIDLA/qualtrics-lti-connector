@@ -1,0 +1,43 @@
+{
+  "description": "Sample LTI 1.3 launch payload for testing",
+  "iss": "https://demo.agilixbuzz.com",
+  "aud": ["qualtrics-lti-connector"],
+  "exp": 1735689600,
+  "iat": 1735686000,
+  "nonce": "sample-nonce-123456",
+  "sub": "user_123",
+  "name": "Test Student",
+  "given_name": "Test",
+  "family_name": "Student",
+  "email": "test.student@example.com",
+  "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "1",
+  "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
+  "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
+  "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
+    "id": "resource_link_456",
+    "title": "Module 1 Feedback Survey",
+    "description": "Please complete this feedback survey"
+  },
+  "https://purl.imsglobal.org/spec/lti/claim/context": {
+    "id": "course_789",
+    "label": "BIO101",
+    "title": "Biology 101",
+    "type": ["CourseOffering"]
+  },
+  "https://purl.imsglobal.org/spec/lti/claim/roles": [
+    "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+  ],
+  "https://purl.imsglobal.org/spec/lti/claim/custom": {
+    "course_id": "BIO101",
+    "assignment_id": "survey_001"
+  },
+  "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint": {
+    "scope": [
+      "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+      "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+      "https://purl.imsglobal.org/spec/lti-ags/scope/score"
+    ],
+    "lineitems": "https://demo.agilixbuzz.com/api/lti/courses/course_789/lineitems",
+    "lineitem": "https://demo.agilixbuzz.com/api/lti/courses/course_789/lineitems/lineitem_123"
+  }
+}

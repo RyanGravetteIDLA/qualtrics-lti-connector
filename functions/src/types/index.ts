@@ -22,7 +22,8 @@ export interface LTIKey {
 
 export interface UserSession {
   id: string;
-  userId: string;
+  userId: string; // Now contains email address
+  userEmail: string; // Explicit email field
   ltiLaunchId: string;
   platformId: string;
   contextId: string;
@@ -35,7 +36,8 @@ export interface UserSession {
 
 export interface LTILaunch {
   id: string;
-  userId: string;
+  userId: string; // Now contains email address as primary identifier
+  lmsUserId: string; // Original LMS subject ID for reference
   platformId: string;
   deploymentId: string;
   contextId: string;
@@ -81,7 +83,9 @@ export interface SurveyConfig {
 
 export interface GradePassback {
   id: string;
-  userId: string;
+  userId: string; // Now contains email address
+  userEmail: string; // Explicit email field for clarity
+  lmsUserId?: string; // Original LMS ID if needed for passback
   ltiLaunchId: string;
   surveyConfigId: string;
   qualtricsResponseId: string;

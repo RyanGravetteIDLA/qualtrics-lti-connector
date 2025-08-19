@@ -77,7 +77,8 @@ functions/
 // Collection: user_sessions
 {
   id: string,
-  userId: string,
+  userId: string, // Email address as primary identifier
+  userEmail: string, // Explicit email field
   ltiLaunchId: string,
   platformId: string,
   contextId: string,
@@ -91,7 +92,9 @@ functions/
 // Collection: grade_passbacks
 {
   id: string,
-  userId: string,
+  userId: string, // Email address as primary identifier
+  userEmail: string, // Explicit email field
+  lmsUserId?: string, // Original LMS ID for grade passback
   surveyConfigId: string,
   qualtricsResponseId: string,
   grade: number,
